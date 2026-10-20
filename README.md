@@ -7,6 +7,9 @@ would sponsor the run. Every answer is measured in Qloo's taste graph, not guess
 
 Built for the Qloo Agentic Hackathon, October 2026.
 
+**Live demo:** https://hometown.shrikar84.workers.dev
+**Source:** https://github.com/sarchak/hometown
+
 ## The problem
 
 Touring is where live acts earn, and routing a tour is still guesswork plus streaming counts.

@@ -7,8 +7,8 @@ import { citiesFor } from "../src/cities.ts";
 const env: any = { QLOO_MOCK: "1", QLOO_BASE_URL: "https://hackathon.api.qloo.com", OPENAI_MODEL: "x", OPENAI_API_KEY: "x" };
 
 test("marketScore ranks a strong city above a weak one and stays in 0-100", () => {
-  const strong = Array.from({ length: 30 }, () => ({ affinity: 0.95, popularity: 0.9 }));
-  const weak = Array.from({ length: 30 }, () => ({ affinity: 0.3, popularity: 0.2 }));
+  const strong = Array.from({ length: 30 }, () => ({ rank: 0.95 }));
+  const weak = Array.from({ length: 30 }, () => ({ rank: 0.3 }));
   assert.ok(marketScore(strong) > marketScore(weak));
   assert.ok(marketScore(strong) <= 100 && marketScore(weak) >= 0);
   assert.equal(marketScore([]), 0);

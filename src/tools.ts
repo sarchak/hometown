@@ -71,7 +71,7 @@ export const TOOL_DEFS = [
 // helpers
 // ---------------------------------------------------------------------------
 const aff = (e: any): number => e?.query?.affinity ?? e?.affinity ?? 0;
-const img = (e: any): string | undefined => e?.properties?.image?.url ?? e?.properties?.image;
+const img = (e: any): string | undefined => e?.properties?.images?.[0]?.url ?? e?.properties?.image?.url ?? e?.properties?.image;
 const latlon = (e: any): { lat: number; lon: number } | undefined => {
   const l = e?.location ?? e?.properties?.location ?? e?.properties?.geocode;
   const lat = l?.lat ?? l?.latitude, lon = l?.lon ?? l?.lng ?? l?.longitude;
@@ -83,7 +83,7 @@ function compactPlace(e: any) {
   return {
     entity_id: e.entity_id, name: e.name, affinity: r2(aff(e)), popularity: r2(e.popularity ?? 0),
     address: e.properties?.address, rating: e.properties?.business_rating, price_level: e.properties?.price_level,
-    website: e.properties?.website, image: img(e), location: latlon(e),
+    website: e.properties?.website, image: img(e), location: latlon(e), area: e.properties?.geocode?.name,
     tags: (e.tags ?? []).slice(0, 5).map((t: any) => t.name).filter(Boolean),
   };
 }
@@ -91,24 +91,27 @@ function compactEntity(e: any) {
   return { entity_id: e.entity_id, name: e.name, type: e.subtype ?? e.types?.[0], affinity: r2(aff(e)), popularity: r2(e.popularity ?? 0), image: img(e), tags: (e.tags ?? []).slice(0, 3).map((t: any) => t.name).filter(Boolean) };
 }
 
-/** Market score. ponytail: mean of the top 15 cells of affinity weighted by popularity; recalibrate on real data. */
-export function marketScore(cells: { affinity: number; popularity: number }[]): number {
+/** Market score, 0 to 100, from heatmap affinity_rank. Qloo normalises `affinity` to 1 within
+ * each city, so only `affinity_rank` compares across cities (Austin 0.97 vs Omaha 0.42 for Khruangbin). */
+export function marketScore(cells: { rank: number }[]): number {
   if (!cells.length) return 0;
-  const top = [...cells].sort((a, b) => b.affinity - a.affinity).slice(0, 15);
-  const mean = top.reduce((s, c) => s + c.affinity * (0.5 + 0.5 * c.popularity), 0) / top.length;
-  return Math.round(mean * 100);
+  const mean = (xs: { rank: number }[]) => xs.reduce((s, c) => s + c.rank, 0) / xs.length;
+  const top = [...cells].sort((a, b) => b.rank - a.rank).slice(0, 15);
+  // ponytail: half "how hot is the hottest pocket", half "how much of the city over-indexes"; the top-15 term alone
+  // saturates at 100 for household-name acts.
+  return Math.round((0.5 * mean(top) + 0.5 * mean(cells)) * 100);
 }
 
 function cells(res: any) {
-  return ((res?.results?.heatmap ?? []) as any[]).map((h) => ({ lat: h.location?.latitude, lon: h.location?.longitude, affinity: h.query?.affinity ?? 0, popularity: h.query?.popularity ?? 0 })).filter((c) => typeof c.lat === "number");
+  return ((res?.results?.heatmap ?? []) as any[]).map((h) => ({ lat: h.location?.latitude, lon: h.location?.longitude, affinity: h.query?.affinity ?? 0, rank: h.query?.affinity_rank ?? h.query?.affinity ?? 0, popularity: h.query?.popularity ?? 0 })).filter((c) => typeof c.lat === "number");
 }
 
 const VENUE_QUERIES: Record<string, string[]> = {
-  music: ["music venue", "concert hall", "live music"],
-  comedy: ["comedy club", "comedy"],
-  theater: ["theater", "performing arts"],
-  club: ["night club", "dance club"],
-  any: ["music venue", "comedy club", "theater", "night club"],
+  music: ["live music venue", "concert hall"],
+  comedy: ["comedy club"],
+  theater: ["performing arts theater", "concert hall"],
+  club: ["night club"],
+  any: ["live music venue", "comedy club", "performing arts theater", "night club"],
 };
 const SPOT_QUERIES = ["restaurant", "bar"];
 
@@ -122,7 +125,7 @@ async function placeTags(qloo: Qloo, queries: string[]): Promise<string[]> {
       const res = await qloo.tags({ "filter.query": q, "filter.tag.types": "urn:tag:genre:place,urn:tag:category:place", take: 5 });
       const tags: any[] = res?.results?.tags ?? [];
       const exact = tags.find((t) => t.name?.toLowerCase() === q.toLowerCase());
-      return (exact ?? tags[0])?.tag_id as string | undefined;
+      return ((exact ?? tags[0])?.id ?? (exact ?? tags[0])?.tag_id) as string | undefined;
     } catch { return undefined; }
   }));
   const ids = [...new Set(found.filter(Boolean) as string[])];
@@ -131,7 +134,7 @@ async function placeTags(qloo: Qloo, queries: string[]): Promise<string[]> {
 }
 
 async function heatmap(qloo: Qloo, entity_id: string, city: City) {
-  const res = await qloo.insights({ "filter.type": "urn:heatmap", "signal.interests.entities": entity_id, "filter.location.query": city.q, take: 50 });
+  const res = await qloo.insights({ "filter.type": "urn:heatmap", "signal.interests.entities": entity_id, "filter.location.query": city.q });
   const cs = cells(res);
   const top = [...cs].sort((a, b) => b.affinity - a.affinity);
   const hot = top[0];
@@ -180,7 +183,12 @@ export async function runTool(name: string, args: any, ctx: Ctx): Promise<any> {
         qloo.insights({ "filter.type": "urn:entity:place", ...base, "filter.tags": spotTags.join(",") || undefined, "operator.filter.tags": spotTags.length > 1 ? "union" : undefined, take: 8, "filter.popularity.min": 0.3 }),
         qloo.insights({ "filter.type": openerType, "signal.interests.entities": args.entity_id, "signal.location.query": city.q, take: 8, "filter.popularity.max": 0.9 }),
       ]);
-      const venues = (venuesRes?.results?.entities ?? []).map(compactPlace);
+      let venueEntities: any[] = venuesRes?.results?.entities ?? [];
+      if (!venueEntities.length && venueTags.length) { // nothing tagged within 6 km of the hotspot: widen to the whole city
+        const wide = await qloo.insights({ "filter.type": "urn:entity:place", "signal.interests.entities": args.entity_id, "filter.location.query": city.q, "filter.tags": venueTags.join(","), "operator.filter.tags": venueTags.length > 1 ? "union" : undefined, "sort_by": "affinity", take: 10 });
+        venueEntities = wide?.results?.entities ?? [];
+      }
+      const venues = venueEntities.map(compactPlace);
       const spots = (spotsRes?.results?.entities ?? []).map(compactPlace);
       const openers = (openersRes?.results?.entities ?? []).map(compactEntity).filter((o: any) => o.entity_id !== args.entity_id);
       return { city: city.name, score: hm.score, hotspot: point, cells: hm.cells, venue_tags: venueTags, venues, spots, openers };
@@ -188,7 +196,7 @@ export async function runTool(name: string, args: any, ctx: Ctx): Promise<any> {
     case "crowd_profile": {
       const [demo, tags] = await Promise.all([
         qloo.insights({ "filter.type": "urn:demographics", "signal.interests.entities": args.entity_id }),
-        qloo.insights({ "filter.type": "urn:tag", "signal.interests.entities": args.entity_id, take: 15 }),
+        qloo.insights({ "filter.type": "urn:tag", "signal.interests.entities": args.entity_id, "filter.tag.types": "urn:tag:genre:music,urn:tag:genre:media,urn:tag:style:qloo,urn:tag:theme:qloo,urn:tag:keyword:qloo", take: 15 }),
       ]);
       const d = demo?.results?.demographics?.[0]?.query ?? {};
       return { age: d.age ?? {}, gender: d.gender ?? {}, tags: (tags?.results?.tags ?? []).map((t: any) => ({ name: t.name, affinity: r2(aff(t)), kind: String(t.subtype ?? "").split(":")[2] })) };
@@ -202,11 +210,12 @@ export async function runTool(name: string, args: any, ctx: Ctx): Promise<any> {
       const res = await qloo.trending({ "filter.type": args.entity_type, "signal.interests.entities": args.entity_id, "filter.start_date": start.toISOString().slice(0, 10), "filter.end_date": end.toISOString().slice(0, 10), take: 30 });
       const pts = ((res?.results?.trending ?? []) as any[]).map((p) => ({ date: p.date, percentile: p.population_percentile, rank: p.population_rank, velocity: p.velocity_fold_change ?? p.population_rank_velocity })).sort((a, b) => a.date.localeCompare(b.date));
       const first = pts[0]?.percentile, last = pts.at(-1)?.percentile;
-      return { points: pts, change: first !== undefined && last !== undefined ? r2(last - first) : undefined };
+      const flat = pts.length > 1 && pts.every((p) => p.percentile === pts[0].percentile);
+      return { points: pts, flat, percentile: last, rank: pts.at(-1)?.rank, change: first !== undefined && last !== undefined ? r2(last - first) : undefined };
     }
     case "find_tag": {
       const res = await qloo.tags({ "filter.query": args.query, "feature.semantic_search": true, take: 8 });
-      return { tags: (res?.results?.tags ?? []).map((t: any) => ({ tag_id: t.tag_id, name: t.name, subtype: t.subtype })) };
+      return { tags: (res?.results?.tags ?? []).map((t: any) => ({ tag_id: t.id ?? t.tag_id, name: t.name, subtype: t.type ?? t.subtype })) };
     }
     case "finalize_tour":
       return { ok: true, title: args.title, stops: args.stops };

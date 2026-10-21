@@ -71,7 +71,7 @@ const SUMMARY = {
   plan_city: (r) => `${r.venues.length} rooms, ${r.spots.length} pre-show spots, ${r.openers.length} local openers`,
   crowd_profile: (r) => `${r.tags.length} taste tags`,
   find_sponsors: (r) => `${r.brands.length} brands: ${r.brands.slice(0, 3).map((b) => b.name).join(", ")}`,
-  momentum: (r) => r.change === undefined ? "No trend data" : `${r.change >= 0 ? "Up" : "Down"} ${Math.abs(r.change).toFixed(1)} percentile points`,
+  momentum: (r) => r.change === undefined ? "No trend data" : r.flat ? `Flat: rank ${r.rank}, ${pct(r.percentile)}th percentile` : `${r.change >= 0 ? "Up" : "Down"} ${(Math.abs(r.change) * 100).toFixed(1)} percentile points`,
   find_tag: (r) => r.tags.map((t) => t.name).slice(0, 4).join(", "),
   finalize_tour: (r) => `${r.stops.length} stops`,
 };
@@ -156,11 +156,12 @@ function showSponsors(r) {
 }
 function showMomentum(r) {
   const el = $("#trend"); if (!el || !r.points?.length) return;
-  const xs = r.points.map((p) => p.percentile ?? 0);
+  if (r.flat) { el.innerHTML = `<h3 style="margin-top:14px">Momentum</h3><p>Qloo trending: population rank ${esc(String(r.rank))}, ${pct(r.percentile)}th percentile, unchanged across ${r.points.length} weekly readings (${r.points[0].date} to ${r.points.at(-1).date}).</p>`; return; }
+  const xs = r.points.map((p) => (p.percentile ?? 0) * 100);
   const min = Math.min(...xs), max = Math.max(...xs), span = max - min || 1;
   const W = 400, H = 60;
   const path = xs.map((v, i) => `${i ? "L" : "M"}${(i / (xs.length - 1)) * W},${H - 4 - ((v - min) / span) * (H - 8)}`).join(" ");
-  el.innerHTML = `<h3 style="margin-top:14px">Momentum</h3><p>Qloo trending percentile, weekly, last six months: ${r.change >= 0 ? "up" : "down"} ${Math.abs(r.change ?? 0).toFixed(1)} points (${r.points[0].date} to ${r.points.at(-1).date})</p><svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path class="fill" d="${path} L${W},${H} L0,${H} Z"></path><path d="${path}"></path></svg>`;
+  el.innerHTML = `<h3 style="margin-top:14px">Momentum</h3><p>Qloo trending percentile, weekly, last six months: ${r.change >= 0 ? "up" : "down"} ${(Math.abs(r.change ?? 0) * 100).toFixed(1)} points (${r.points[0].date} to ${r.points.at(-1).date})</p><svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path class="fill" d="${path} L${W},${H} L0,${H} Z"></path><path d="${path}"></path></svg>`;
 }
 
 // ---------- agent transport ----------

@@ -25,6 +25,12 @@ export class Qloo {
 
   get mock() { return this.env.QLOO_MOCK === "1" || !this.env.QLOO_API_KEY; }
 
+  // ponytail: per-request semaphore; the hackathon key 429s past a handful of concurrent calls. Retries back off on 429.
+  private inflight = 0;
+  private waiters: (() => void)[] = [];
+  private slot() { if (this.inflight < 4) { this.inflight++; return Promise.resolve(); } return new Promise<void>((r) => this.waiters.push(() => { this.inflight++; r(); })); }
+  private release() { this.inflight--; this.waiters.shift()?.(); }
+
   async get(path: string, params: Params): Promise<any> {
     const url = new URL(path, this.env.QLOO_BASE_URL);
     for (const [k, v] of Object.entries(params)) if (v !== undefined && v !== "") url.searchParams.set(k, String(v));
@@ -41,8 +47,13 @@ export class Qloo {
       this.log.push({ path, params, ms: Date.now() - t0, cached: true, ok: true });
       return hit.json();
     }
-    const res = await fetch(url, { headers: { "X-Api-Key": this.env.QLOO_API_KEY! } });
-    const text = await res.text();
+    let res!: Response, text = "";
+    for (let attempt = 0; ; attempt++) {
+      await this.slot();
+      try { res = await fetch(url, { headers: { "X-Api-Key": this.env.QLOO_API_KEY! } }); text = await res.text(); } finally { this.release(); }
+      if (res.status !== 429 || attempt >= 4) break;
+      await new Promise((r) => setTimeout(r, 400 * 2 ** attempt + Math.random() * 300));
+    }
     this.log.push({ path, params, ms: Date.now() - t0, cached: false, ok: res.ok });
     if (!res.ok) throw new QlooError(res.status, `Qloo ${res.status} on ${path}: ${text.slice(0, 300)}`);
     const data = JSON.parse(text);
@@ -92,7 +103,7 @@ function mockResponse(path: string, p: URLSearchParams): any {
   if (path === "/v2/tags") {
     const q = p.get("filter.query") ?? "tag";
     const tt = p.get("filter.tag.types") ?? "urn:tag:genre:place";
-    return { success: true, results: { tags: [{ tag_id: `${tt}:${q.toLowerCase().replace(/\s+/g, "_")}`, name: q, subtype: tt, types: ["urn:entity:place"] }] } };
+    return { success: true, results: { tags: [{ id: `${tt}:${q.toLowerCase().replace(/\s+/g, "_")}`, name: q, subtype: tt, types: ["urn:entity:place"] }] } };
   }
   if (path === "/v2/trending") {
     const pts = []; const d = new Date(p.get("filter.end_date") ?? Date.now());
@@ -113,7 +124,7 @@ function mockResponse(path: string, p: URLSearchParams): any {
     return { success: true, results: { demographics: [{ entity_id: p.get("signal.interests.entities"), query: { age: { "24_and_younger": v(), "25_to_29": v(), "30_to_34": v(), "35_to_44": v(), "45_to_54": v(), "55_and_older": v() }, gender: { male: 0.12, female: -0.12 } } }] } };
   }
   if (type === "urn:tag") {
-    return { success: true, results: { tags: TAGS.slice(0, take).map((t) => ({ tag_id: `urn:tag:keyword:qloo:${t.toLowerCase().replace(/\s/g, "_")}`, name: t, subtype: "urn:tag:keyword:qloo", query: { affinity: Math.round((0.6 + r() * 0.4) * 1000) / 1000 } })) } };
+    return { success: true, results: { tags: TAGS.slice(0, take).map((t) => ({ id: `urn:tag:keyword:qloo:${t.toLowerCase().replace(/\s/g, "_")}`, name: t, subtype: "urn:tag:keyword:qloo", query: { affinity: Math.round((0.6 + r() * 0.4) * 1000) / 1000 } })) } };
   }
   if (type === "urn:entity:place") {
     const loc = p.get("filter.location") ?? "";

@@ -107,7 +107,7 @@ function showMarkets(r) {
   const el = $("#markets"); el.hidden = false;
   el.innerHTML = r.markets.slice(0, 15).map((m) => `<div class="m" data-city="${esc(m.city)}"><span>${esc(m.city)}</span><b>${m.score}</b><div class="bar"><i style="width:${m.score}%"></i></div></div>`).join("");
   el.querySelectorAll(".m").forEach((d) => d.addEventListener("click", () => { const m = state.markets[d.dataset.city]; if (m?.centroid) map.flyTo([m.centroid.lat, m.centroid.lon], 11); }));
-  $("#book-sub").textContent = `${r.markets.length} markets ranked by how strongly this crowd over-indexes there. Score is the mean affinity of the hottest Qloo heatmap cells, weighted by local popularity.`;
+  $("#book-sub").textContent = `${r.markets.length} markets ranked by how strongly this crowd over-indexes there. Score blends the affinity rank of the hottest Qloo heatmap cells with the city-wide average, 0 to 100.`;
 }
 
 const row = (x, pick) => `<li class="${pick ? "pick" : ""}"><span class="name">${esc(x.name)}${x.address || x.tags?.length ? `<small>${esc(x.address ?? x.tags.slice(0, 2).join(", "))}</small>` : ""}</span><span class="aff">${pct(x.affinity)}</span></li>`;

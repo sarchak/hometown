@@ -82,7 +82,7 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
 function compactPlace(e: any) {
   return {
     entity_id: e.entity_id, name: e.name, affinity: r2(aff(e)), popularity: r2(e.popularity ?? 0),
-    address: e.properties?.address, rating: e.properties?.business_rating, price_level: e.properties?.price_level,
+    address: e.properties?.address, rating: e.properties?.business_rating ? Math.round(e.properties.business_rating * 10) / 10 : undefined, price_level: e.properties?.price_level,
     website: e.properties?.website, image: img(e), location: latlon(e), area: e.properties?.geocode?.name,
     tags: (e.tags ?? []).slice(0, 5).map((t: any) => t.name).filter(Boolean),
   };

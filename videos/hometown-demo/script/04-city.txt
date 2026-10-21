@@ -1,0 +1,1 @@
+Then it builds each night. From the hottest cell in the city, it asks Qloo for rooms this crowd already has affinity for, local artists who share the audience and could open, and the restaurants and bars nearby. Every number on the card is a Qloo affinity, not a guess.

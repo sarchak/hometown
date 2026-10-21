@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Hometown demo</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  @font-face { font-family: "Barlow Condensed"; src: url("assets/fonts/BarlowCondensed-700.ttf") format("truetype"); font-weight: 700; }
+  @font-face { font-family: "Barlow Condensed"; src: url("assets/fonts/BarlowCondensed-600.ttf") format("truetype"); font-weight: 600; }
+  @font-face { font-family: "Barlow"; src: url("assets/fonts/Barlow-500.ttf") format("truetype"); font-weight: 500; }
+  @font-face { font-family: "Barlow"; src: url("assets/fonts/Barlow-600.ttf") format("truetype"); font-weight: 600; }
+  :root { --paper: #EEF0EA; --paper-deep: #E2E5DD; --ink: #14213D; --ink-soft: #4A5570; --route: #D7263D; --tape: #F4D35E; --display: "Barlow Condensed"; --body: "Barlow"; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); }
+  #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--paper); font-family: var(--body); color: var(--ink); }
+  .clip { position: absolute; inset: 0; }
+  .shot { position: absolute; inset: 0; transform-origin: 50% 40%; }
+  .shot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ground { position: absolute; inset: 0; background: var(--paper); }
+  .rule { position: absolute; left: 120px; right: 120px; height: 3px; background: var(--ink); }
+  .route { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .route path { fill: none; stroke: var(--route); stroke-width: 6; stroke-dasharray: 18 14; }
+  .route .stop circle { fill: var(--route); stroke: var(--paper); stroke-width: 6; }
+  .route .stop text { font: 700 30px var(--display); fill: #fff; text-anchor: middle; }
+  .card { position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: grid; align-content: center; }
+  .wordmark { font: 700 150px/1 var(--display); letter-spacing: -0.01em; }
+  .hero { margin-top: 26px; font: 700 76px/1.05 var(--display); max-width: 1500px; }
+  .hero em { font-style: normal; color: var(--route); }
+  .sub { margin-top: 34px; font: 500 34px/1.35 var(--body); color: var(--ink-soft); max-width: 1200px; }
+  .credit { position: absolute; left: 120px; bottom: 80px; font: 600 28px/1.4 var(--display); color: var(--ink-soft); letter-spacing: 0.02em; }
+  .lines { display: grid; gap: 34px; max-width: 1560px; }
+  .lines .l { font: 700 70px/1.08 var(--display); }
+  .lines .l em { font-style: normal; background: linear-gradient(transparent 58%, var(--tape) 58%); }
+  .lines .l.quiet { font: 500 46px/1.25 var(--body); color: var(--ink-soft); max-width: 1300px; }
+  .tags { display: flex; gap: 12px; margin-top: 50px; flex-wrap: wrap; }
+  .tags span { font: 600 28px/1 var(--display); letter-spacing: 0.02em; padding: 14px 18px; border: 3px solid var(--ink); border-radius: 3px; }
+  .tags span.hi { background: var(--route); border-color: var(--route); color: #fff; }
+  .url { margin-top: 44px; font: 700 54px/1 var(--display); color: var(--route); }
+  .lower { pointer-events: none; }
+  .lt-card { position: absolute; right: 64px; top: 64px; max-width: 900px; background: var(--paper); color: var(--ink); border: 3px solid var(--ink); border-radius: 3px; padding: 26px 34px 28px; box-shadow: 0 24px 48px rgba(20,33,61,.22); }
+  .lower.low .lt-card { top: auto; bottom: 64px; }
+  .lt-top { display: flex; align-items: center; gap: 12px; font: 600 28px/1 var(--display); letter-spacing: 0.04em; color: var(--ink-soft); margin-bottom: 10px; }
+  .lt-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--route); }
+  .lt-line { font: 700 40px/1.15 var(--display); }
+  .lt-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .lt-chips span { font: 500 28px/1 var(--body); padding: 9px 12px; border: 2px solid var(--ink); border-radius: 3px; background: #fff; }
+</style>
+</head>
+<body>
+<div data-hf-id="hf-1ifp" id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="98">
+
+  <!-- Open -->
+  <section data-hf-id="hf-c837" class="clip" id="open" data-start="0" data-duration="10.6" data-track-index="0">
+    <div data-hf-id="hf-ygft" class="ground"></div>
+    <svg data-hf-id="hf-bfoz" class="route" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path data-hf-id="hf-ctz7" id="open-path" d="M300,150 L640,100 L980,190 L1320,90 L1620,160" />
+      <g data-hf-id="hf-l00u" class="stop" id="open-stop1"><circle data-hf-id="hf-gdld" cx="300" cy="150" r="26" /><text data-hf-id="hf-o0zw" x="300" y="161">1</text></g>
+      <g data-hf-id="hf-h1wt" class="stop" id="open-stop2"><circle data-hf-id="hf-m0pl" cx="640" cy="100" r="26" /><text data-hf-id="hf-gf6p" x="640" y="111">2</text></g>
+      <g data-hf-id="hf-e2n8" class="stop" id="open-stop3"><circle data-hf-id="hf-mg0b" cx="980" cy="190" r="26" /><text data-hf-id="hf-vtmj" x="980" y="201">3</text></g>
+      <g data-hf-id="hf-1k4r" class="stop" id="open-stop4"><circle data-hf-id="hf-rcvt" cx="1320" cy="90" r="26" /><text data-hf-id="hf-c71i" x="1320" y="101">4</text></g>
+      <g data-hf-id="hf-xm0q" class="stop" id="open-stop5"><circle data-hf-id="hf-yzam" cx="1620" cy="160" r="26" /><text data-hf-id="hf-18wd" x="1620" y="171">5</text></g>
+    </svg>
+    <div data-hf-id="hf-vn2y" class="card">
+      <div data-hf-id="hf-spf9" class="wordmark" id="open-wm">Hometown</div>
+      <div data-hf-id="hf-sht1" class="hero" id="open-h1">Every act has <em data-hf-id="hf-ioz5">hometowns</em> it has never played.</div>
+      <div data-hf-id="hf-ge3r" class="sub" id="open-sub">A tour-routing agent that measures the crowd in Qloo's taste graph, then books the night.</div>
+    </div>
+    <div data-hf-id="hf-xk10" class="credit" id="open-credit">Qloo Agentic Hackathon, 2026</div>
+  </section>
+  <audio data-hf-id="hf-39q7" id="vo-open" src="assets/vo/00-open.mp3" data-start="0.7" data-duration="8.50" data-track-index="4" data-volume="1"></audio>
+
+  <!-- Problem -->
+  <section data-hf-id="hf-8l50" class="clip" id="problem" data-start="10.6" data-duration="12.5" data-track-index="0">
+    <div data-hf-id="hf-p66l" class="ground"></div>
+    <div data-hf-id="hf-i08u" class="card">
+      <div data-hf-id="hf-qvs1" class="lines">
+        <div data-hf-id="hf-7h47" class="l" id="p-l1">Routing a tour is still <em data-hf-id="hf-9yhh">guesswork plus streaming counts.</em></div>
+        <div data-hf-id="hf-7poi" class="l quiet" id="p-l2">Streams say where people press play.</div>
+        <div data-hf-id="hf-lx74" class="l" id="p-l3">They do not say which room, which opener, or which brand.</div>
+        <div data-hf-id="hf-y2iz" class="tags" id="p-tags"><span data-hf-id="hf-lsdm" class="hi">the room</span><span data-hf-id="hf-e176" class="hi">the opener</span><span data-hf-id="hf-2909" class="hi">the sponsor</span></div>
+      </div>
+    </div>
+  </section>
+  <audio data-hf-id="hf-ag84" id="vo-problem" src="assets/vo/01-problem.mp3" data-start="11.00" data-duration="11.19" data-track-index="4" data-volume="1"></audio>
+
+  <!-- Footage scenes -->
+  <div data-hf-id="hf-0x8o" class="clip" id="paper" data-start="23.10" data-duration="64.90" data-track-index="0" style="background:#EEF0EA"></div>
+  
+    <!-- start: 7.5s; approach 1.8s at 1.00x, then 5.7s at 0.97x -->
+    <div data-hf-id="hf-249e" class="shot" id="w-start">
+      <video data-hf-id="hf-q4p5" id="v-start-a" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="23.10" data-duration="1.84" data-media-start="3.36" data-playback-rate="1.000" data-track-index="1"></video>
+      <video data-hf-id="hf-4j38" id="v-start-b" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="24.94" data-duration="5.66" data-media-start="5.20" data-playback-rate="0.966" data-track-index="1"></video>
+    </div>
+    <section data-hf-id="hf-nywl" class="clip lower low" id="lt-start" data-start="23.40" data-duration="7.20" data-track-index="3">
+      <div data-hf-id="hf-6ezv" class="lt-card"><div data-hf-id="hf-y2he" class="lt-top"><span data-hf-id="hf-miif" class="lt-dot"></span><span data-hf-id="hf-79rs" class="lt-label">Name the act</span></div><div data-hf-id="hf-owrb" class="lt-line">Qloo search resolves it to a real entity.</div><div data-hf-id="hf-euqe" class="lt-chips"><span data-hf-id="hf-600q">GET /search</span><span data-hf-id="hf-wg9l">region</span><span data-hf-id="hf-6712">stops</span><span data-hf-id="hf-e9fb">rooms</span></div></div>
+    </section>
+
+    <!-- markets: 13.1s; approach 1.3s at 1.00x, then 11.8s at 0.50x -->
+    <div data-hf-id="hf-gpdx" class="shot" id="w-markets">
+      <video data-hf-id="hf-rlkm" id="v-markets-a" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="30.60" data-duration="1.30" data-media-start="10.67" data-playback-rate="1.000" data-track-index="1"></video>
+      <video data-hf-id="hf-bxfd" id="v-markets-b" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="31.90" data-duration="11.80" data-media-start="11.97" data-playback-rate="0.500" data-track-index="1"></video>
+    </div>
+    <section data-hf-id="hf-27ux" class="clip lower low" id="lt-markets" data-start="30.90" data-duration="12.80" data-track-index="3">
+      <div data-hf-id="hf-0uh7" class="lt-card"><div data-hf-id="hf-2es6" class="lt-top"><span data-hf-id="hf-mypj" class="lt-dot"></span><span data-hf-id="hf-yins" class="lt-label">Rank the markets</span></div><div data-hf-id="hf-apln" class="lt-line">One Qloo heatmap per city, in parallel. Scored by affinity rank.</div><div data-hf-id="hf-pdkq" class="lt-chips"><span data-hf-id="hf-ywsj">filter.type=urn:heatmap</span><span data-hf-id="hf-xolt">signal.interests.entities</span><span data-hf-id="hf-l195">12 cities</span></div></div>
+    </section>
+
+    <!-- city: 14.2s; approach 6.2s at 2.74x, then 8.0s at 1.00x -->
+    <div data-hf-id="hf-ut63" class="shot" id="w-city">
+      <video data-hf-id="hf-sz18" id="v-city-a" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="43.70" data-duration="6.19" data-media-start="16.07" data-playback-rate="2.743" data-track-index="1"></video>
+      <video data-hf-id="hf-94uv" id="v-city-b" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="49.89" data-duration="8.01" data-media-start="33.05" data-track-index="1"></video>
+    </div>
+    <section data-hf-id="hf-wrqx" class="clip lower" id="lt-city" data-start="44.00" data-duration="13.90" data-track-index="3">
+      <div data-hf-id="hf-0g66" class="lt-card"><div data-hf-id="hf-2t37" class="lt-top"><span data-hf-id="hf-mkei" class="lt-dot"></span><span data-hf-id="hf-j49l" class="lt-label">Build the night</span></div><div data-hf-id="hf-j0ml" class="lt-line">Rooms, openers and pre-show spots, each a Qloo affinity.</div><div data-hf-id="hf-prvr" class="lt-chips"><span data-hf-id="hf-c8q8">urn:entity:place</span><span data-hf-id="hf-2xd0">filter.location=POINT()</span><span data-hf-id="hf-1u1m">urn:entity:artist</span><span data-hf-id="hf-b44w">signal.location.query</span></div></div>
+    </section>
+
+    <!-- crowd: 9.5s; approach 0.0s at 1.00x, then 9.5s at 0.50x -->
+    <div data-hf-id="hf-pqbl" class="shot" id="w-crowd">
+      
+      <video data-hf-id="hf-w7p6" id="v-crowd-b" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="57.90" data-duration="9.50" data-media-start="40.32" data-playback-rate="0.500" data-track-index="1"></video>
+    </div>
+    <section data-hf-id="hf-zd06" class="clip lower" id="lt-crowd" data-start="58.20" data-duration="9.20" data-track-index="3">
+      <div data-hf-id="hf-01v5" class="lt-card"><div data-hf-id="hf-37e8" class="lt-top"><span data-hf-id="hf-m63h" class="lt-dot"></span><span data-hf-id="hf-akuj" class="lt-label">Who shows up</span></div><div data-hf-id="hf-uyu5" class="lt-line">Age skew, taste tags and the brands this crowd over-indexes on.</div><div data-hf-id="hf-q66s" class="lt-chips"><span data-hf-id="hf-vico">urn:demographics</span><span data-hf-id="hf-xo1m">urn:tag</span><span data-hf-id="hf-0b22">urn:entity:brand</span></div></div>
+    </section>
+
+    <!-- memo: 12s; approach 0.0s at 1.00x, then 12.0s at 0.57x -->
+    <div data-hf-id="hf-6dk4" class="shot" id="w-memo">
+      
+      <video data-hf-id="hf-7c3v" id="v-memo-b" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="67.40" data-duration="12.00" data-media-start="45.07" data-playback-rate="0.573" data-track-index="1"></video>
+    </div>
+    <section data-hf-id="hf-srsc" class="clip lower" id="lt-memo" data-start="67.70" data-duration="11.70" data-track-index="3">
+      <div data-hf-id="hf-znk4" class="lt-card"><div data-hf-id="hf-0f91" class="lt-top"><span data-hf-id="hf-oy8o" class="lt-dot"></span><span data-hf-id="hf-efeb" class="lt-label">The memo</span></div><div data-hf-id="hf-60ad" class="lt-line">"Qloo shows" is measured. "I read this as" is the agent.</div><div data-hf-id="hf-qkht" class="lt-chips"><span data-hf-id="hf-p76u">finalize_tour</span><span data-hf-id="hf-t5zg">drivable order</span><span data-hf-id="hf-p0bd">every Qloo call logged</span></div></div>
+    </section>
+
+    <!-- followup: 8.6s; approach 4.7s at 2.69x, then 3.9s at 1.00x -->
+    <div data-hf-id="hf-ia0i" class="shot" id="w-followup">
+      <video data-hf-id="hf-viet" id="v-followup-a" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="79.40" data-duration="4.73" data-media-start="51.55" data-playback-rate="2.693" data-track-index="1"></video>
+      <video data-hf-id="hf-46vf" id="v-followup-b" class="clip" src="assets/clips/take.mp4" muted playsinline data-start="84.13" data-duration="3.87" data-media-start="64.29" data-track-index="1"></video>
+    </div>
+    <section data-hf-id="hf-4sad" class="clip lower" id="lt-followup" data-start="79.70" data-duration="8.30" data-track-index="3">
+      <div data-hf-id="hf-z993" class="lt-card"><div data-hf-id="hf-0tk2" class="lt-top"><span data-hf-id="hf-ojxn" class="lt-dot"></span><span data-hf-id="hf-ng0p" class="lt-label">Change your mind</span></div><div data-hf-id="hf-1c0e" class="lt-line">Swap a city. New Qloo calls, a new route, and an honest push back.</div><div data-hf-id="hf-qysu" class="lt-chips"><span data-hf-id="hf-fpzc">Swap Miami for Nashville</span><span data-hf-id="hf-y1d4">re-ranked</span><span data-hf-id="hf-5dkk">re-routed</span></div></div>
+    </section>
+  <audio data-hf-id="hf-dh9q" id="vo-start" src="assets/vo/02-start.mp3" data-start="23.45" data-duration="6.18" data-track-index="4" data-volume="1"></audio>
+  <audio data-hf-id="hf-qetv" id="vo-markets" src="assets/vo/03-markets.mp3" data-start="30.95" data-duration="11.75" data-track-index="4" data-volume="1"></audio>
+  <audio data-hf-id="hf-ff8b" id="vo-city" src="assets/vo/04-city.mp3" data-start="44.05" data-duration="12.82" data-track-index="4" data-volume="1"></audio>
+  <audio data-hf-id="hf-wlyw" id="vo-crowd" src="assets/vo/05-crowd.mp3" data-start="58.25" data-duration="8.17" data-track-index="4" data-volume="1"></audio>
+  <audio data-hf-id="hf-fnmt" id="vo-memo" src="assets/vo/06-memo.mp3" data-start="67.75" data-duration="10.68" data-track-index="4" data-volume="1"></audio>
+  <audio data-hf-id="hf-icb6" id="vo-followup" src="assets/vo/07-followup.mp3" data-start="79.75" data-duration="7.29" data-track-index="4" data-volume="1"></audio>
+
+  <!-- Close -->
+  <section data-hf-id="hf-g0hr" class="clip" id="close" data-start="88.00" data-duration="10" data-track-index="0">
+    <div data-hf-id="hf-qd3o" class="ground"></div>
+    <svg data-hf-id="hf-nvyr" class="route" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path data-hf-id="hf-q8w5" id="close-path" d="M300,150 L640,100 L980,190 L1320,90 L1620,160" />
+      <g data-hf-id="hf-71ca" class="stop" id="close-stop1"><circle data-hf-id="hf-3rr9" cx="300" cy="150" r="26" /><text data-hf-id="hf-31us" x="300" y="161">1</text></g>
+      <g data-hf-id="hf-3389" class="stop" id="close-stop2"><circle data-hf-id="hf-gu0d" cx="640" cy="100" r="26" /><text data-hf-id="hf-x0c5" x="640" y="111">2</text></g>
+      <g data-hf-id="hf-2bkg" class="stop" id="close-stop3"><circle data-hf-id="hf-0maz" cx="980" cy="190" r="26" /><text data-hf-id="hf-1piz" x="980" y="201">3</text></g>
+      <g data-hf-id="hf-ydgf" class="stop" id="close-stop4"><circle data-hf-id="hf-mzt9" cx="1320" cy="90" r="26" /><text data-hf-id="hf-1q22" x="1320" y="101">4</text></g>
+      <g data-hf-id="hf-ufce" class="stop" id="close-stop5"><circle data-hf-id="hf-ucs2" cx="1620" cy="160" r="26" /><text data-hf-id="hf-avsx" x="1620" y="171">5</text></g>
+    </svg>
+    <div data-hf-id="hf-iejv" class="card">
+      <div data-hf-id="hf-d5c3" class="wordmark" id="close-wm">Hometown</div>
+      <div data-hf-id="hf-3opj" class="hero" id="close-h1">Find the rooms that <em data-hf-id="hf-vpse">already love you.</em></div>
+      <div data-hf-id="hf-zhxe" class="url" id="close-url">hometown.shrikar84.workers.dev</div>
+      <div data-hf-id="hf-bq0r" class="tags" id="close-tags"><span data-hf-id="hf-pcbk" class="hi">Qloo heatmaps</span><span data-hf-id="hf-9zyw" class="hi">Qloo insights</span><span data-hf-id="hf-kftc" class="hi">Qloo tags</span><span data-hf-id="hf-nhwn">OpenAI tool calling</span><span data-hf-id="hf-030x">Cloudflare Workers</span><span data-hf-id="hf-mt0c">Open source, MIT</span></div>
+    </div>
+    <div data-hf-id="hf-qd2c" class="credit" id="close-credit">Built by Shrikar Archak. github.com/sarchak/hometown</div>
+  </section>
+  <audio data-hf-id="hf-qknj" id="vo-close" src="assets/vo/08-close.mp3" data-start="88.50" data-duration="7.11" data-track-index="4" data-volume="1"></audio>
+</div>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  const drawRoute = (p, at, t0) => {
+    // A left-to-right wipe keeps the dashes; the stops land as the wipe reaches them (x = 300..1620 of 1920).
+    tl.set(p + "-path", { clipPath: "inset(0 100% 0 0)" }, t0);
+    tl.to(p + "-path", { clipPath: "inset(0 0% 0 0)", duration: 1.6, ease: "none" }, at);
+    for (let i = 1; i <= 5; i++) tl.fromTo(p + "-stop" + i, { scale: 0, opacity: 0, transformOrigin: "50% 50%" }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.4)", immediateRender: true }, at + 0.1 + (i - 1) * 0.33);
+  };
+  // Open
+  tl.fromTo("#open-wm", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power4.out" }, 0.25);
+  tl.fromTo("#open-h1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 0.6);
+  tl.fromTo("#open-sub", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 1.3);
+  drawRoute("#open", 3.4, 0);
+  tl.fromTo("#open-credit", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 8.0);
+  tl.to("#open .card, #open .credit, #open .route", { opacity: 0, duration: 0.3, ease: "power2.in" }, 10.25);
+  // Problem: each line lands on its cue
+  tl.fromTo("#p-l1", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "expo.out" }, 10.90);
+  tl.fromTo("#p-l2", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "expo.out" }, 14.60);
+  tl.fromTo("#p-l3", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "expo.out" }, 17.20);
+  tl.fromTo("#p-tags span", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.85, ease: "power3.out" }, 19.20);
+  tl.to("#problem .card", { opacity: 0, duration: 0.3, ease: "power2.in" }, 22.75);
+  // Scenes
+  tl.fromTo("#lt-start .lt-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 23.40);
+  tl.fromTo("#lt-start .lt-chips span", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.07, ease: "power2.out" }, 23.80);
+  tl.to("#lt-start .lt-card", { opacity: 0, y: 14, duration: 0.3, ease: "power2.in" }, 30.20);
+  tl.fromTo("#w-start", { scale: 1.0 }, { scale: 1.03, duration: 7.50, ease: "none" }, 23.10);
+  tl.fromTo("#lt-markets .lt-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 30.90);
+  tl.fromTo("#lt-markets .lt-chips span", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.07, ease: "power2.out" }, 31.30);
+  tl.to("#lt-markets .lt-card", { opacity: 0, y: 14, duration: 0.3, ease: "power2.in" }, 43.30);
+  tl.fromTo("#w-markets", { scale: 1.0 }, { scale: 1.03, duration: 13.10, ease: "none" }, 30.60);
+  tl.fromTo("#lt-city .lt-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 44.00);
+  tl.fromTo("#lt-city .lt-chips span", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.07, ease: "power2.out" }, 44.40);
+  tl.to("#lt-city .lt-card", { opacity: 0, y: 14, duration: 0.3, ease: "power2.in" }, 57.50);
+  tl.fromTo("#w-city", { scale: 1.0 }, { scale: 1.03, duration: 14.20, ease: "none" }, 43.70);
+  tl.fromTo("#lt-crowd .lt-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 58.20);
+  tl.fromTo("#lt-crowd .lt-chips span", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.07, ease: "power2.out" }, 58.60);
+  tl.to("#lt-crowd .lt-card", { opacity: 0, y: 14, duration: 0.3, ease: "power2.in" }, 67.00);
+  tl.fromTo("#w-crowd", { scale: 1.0 }, { scale: 1.03, duration: 9.50, ease: "none" }, 57.90);
+  tl.fromTo("#lt-memo .lt-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 67.70);
+  tl.fromTo("#lt-memo .lt-chips span", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.07, ease: "power2.out" }, 68.10);
+  tl.to("#lt-memo .lt-card", { opacity: 0, y: 14, duration: 0.3, ease: "power2.in" }, 79.00);
+  tl.fromTo("#w-memo", { scale: 1.0 }, { scale: 1.03, duration: 12.00, ease: "none" }, 67.40);
+  tl.fromTo("#lt-followup .lt-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 79.70);
+  tl.fromTo("#lt-followup .lt-chips span", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.07, ease: "power2.out" }, 80.10);
+  tl.to("#lt-followup .lt-card", { opacity: 0, y: 14, duration: 0.3, ease: "power2.in" }, 87.60);
+  tl.fromTo("#w-followup", { scale: 1.0 }, { scale: 1.03, duration: 8.60, ease: "none" }, 79.40);
+  // Close
+  tl.fromTo("#close-wm", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power4.out" }, 88.25);
+  tl.fromTo("#close-h1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 88.60);
+  tl.fromTo("#close-url", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 89.40);
+  tl.fromTo("#close-tags span", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.07, ease: "power3.out" }, 90.00);
+  drawRoute("#close", 92.20, 88.00);
+  tl.fromTo("#close-credit", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 95.00);
+  window.__timelines["main"] = tl;
+  tl.seek(0);
+</script>
+</body>
+</html>

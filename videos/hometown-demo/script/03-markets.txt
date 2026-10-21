@@ -1,0 +1,1 @@
+First, markets. The agent pulls a Qloo heatmap for every candidate city, in parallel, and scores each one by how strongly this crowd over-indexes there. Twelve southern cities, ranked in seconds. Austin leads at eighty-six.

@@ -1,0 +1,1 @@
+Type the act. Qloo search resolves it to a real entity. Pick a region, how many stops, and what kind of room. Then route the tour.

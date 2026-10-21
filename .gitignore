@@ -4,3 +4,9 @@ node_modules
 worker-configuration.d.ts
 dist
 .DS_Store
+videos/*/assets/clips
+videos/*/assets/vo
+videos/*/renders
+videos/*/rec
+videos/*/.hyperframes
+videos/*/.thumbnails

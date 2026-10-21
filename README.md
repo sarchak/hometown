@@ -8,6 +8,7 @@ would sponsor the run. Every answer is measured in Qloo's taste graph, not guess
 Built for the Qloo Agentic Hackathon, October 2026.
 
 **Live demo:** https://hometown.shrikar84.workers.dev
+**Demo video (2 min):** https://hometown.shrikar84.workers.dev/demo.mp4
 **Source:** https://github.com/sarchak/hometown
 
 ## The problem
@@ -73,5 +74,7 @@ taste fit, not a ticket demand forecast, and the agent says so in every memo.
 
 ## Stack
 
-Cloudflare Worker (TypeScript, no framework), static HTML/CSS/JS, Leaflet with CARTO tiles,
-OpenAI chat completions with tools. MIT licensed.
+Cloudflare Worker (TypeScript, no framework), static HTML/CSS/JS, Leaflet with OpenStreetMap tiles,
+OpenAI chat completions with tools. MIT licensed. The demo video is a HyperFrames composition in
+`videos/hometown-demo` (one Playwright take of the live site, ElevenLabs narration); the clips, narration
+and renders are not committed.

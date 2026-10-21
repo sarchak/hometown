@@ -1,0 +1,1 @@
+This is Hometown. A tour-routing agent for live acts, built on Qloo's taste graph. Name an act, and it finds the cities that already love them, then books the night.
